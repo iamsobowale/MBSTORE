@@ -37,10 +37,11 @@ public static class DataSeeder
         var email = (config["Seed:AdminEmail"] ?? "admin@mb.local").ToLowerInvariant();
         var password = config["Seed:AdminPassword"] ?? "Admin123!";
 
-        var existing = await db.Users.FirstOrDefaultAsync(u => u.Email == email, ct);
+        // Find any existing SuperAdmin and correct their email + password.
+        var existing = await db.Users.FirstOrDefaultAsync(u => u.Role == UserRole.SuperAdmin, ct);
         if (existing is not null)
         {
-            // Always re-hash on startup so password env-var changes take effect.
+            existing.Email = email;
             existing.PasswordHash = hasher.Hash(password);
             await db.SaveChangesAsync(ct);
             return;
