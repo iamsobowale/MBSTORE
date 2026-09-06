@@ -41,12 +41,15 @@ public static class DataSeeder
         var existing = await db.Users.FirstOrDefaultAsync(u => u.Role == UserRole.SuperAdmin, ct);
         if (existing is not null)
         {
+            Console.WriteLine($"[Seed] SuperAdmin found (id={existing.Id}, email={existing.Email}). Updating email→{email} and re-hashing password.");
             existing.Email = email;
             existing.PasswordHash = hasher.Hash(password);
             await db.SaveChangesAsync(ct);
+            Console.WriteLine("[Seed] SuperAdmin updated successfully.");
             return;
         }
 
+        Console.WriteLine($"[Seed] No SuperAdmin found. Creating new admin: {email}");
         db.Users.Add(new User
         {
             Email = email,
@@ -55,6 +58,7 @@ public static class DataSeeder
             IsActive = true
         });
         await db.SaveChangesAsync(ct);
+        Console.WriteLine("[Seed] SuperAdmin created successfully.");
     }
 
     private static async Task SeedCatalogAsync(AppDbContext db, CancellationToken ct)
