@@ -21,7 +21,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 
 # Non-root user
-RUN addgroup --system mbsite && adduser --system --ingroup mbsite mbsite
+RUN groupadd --system mbsite && useradd --system --gid mbsite mbsite
 USER mbsite
 
 COPY --from=build /app/publish .
