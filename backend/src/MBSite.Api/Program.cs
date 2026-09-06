@@ -107,10 +107,11 @@ app.UseSerilogRequestLogging();
 app.UseRateLimiter();
 
 if (app.Environment.IsDevelopment())
-{
     app.MapOpenApi();
-    // Apply migrations + seed sample data automatically in development.
-    using var scope = app.Services.CreateScope();
+
+// Always migrate and seed on startup (safe to run repeatedly — idempotent).
+using (var scope = app.Services.CreateScope())
+{
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     if (db.Database.GetPendingMigrations().Any())
         db.Database.Migrate();
