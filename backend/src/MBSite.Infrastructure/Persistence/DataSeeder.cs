@@ -34,10 +34,17 @@ public static class DataSeeder
     private static async Task SeedAdminAsync(
         AppDbContext db, IPasswordHasher hasher, IConfiguration config, CancellationToken ct)
     {
-        if (await db.Users.AnyAsync(ct)) return;
-
         var email = (config["Seed:AdminEmail"] ?? "admin@mb.local").ToLowerInvariant();
         var password = config["Seed:AdminPassword"] ?? "Admin123!";
+
+        var existing = await db.Users.FirstOrDefaultAsync(u => u.Email == email, ct);
+        if (existing is not null)
+        {
+            // Always re-hash on startup so password env-var changes take effect.
+            existing.PasswordHash = hasher.Hash(password);
+            await db.SaveChangesAsync(ct);
+            return;
+        }
 
         db.Users.Add(new User
         {
