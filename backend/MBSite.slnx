@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/MBSite.Api/MBSite.Api.csproj" />
+    <Project Path="src/MBSite.Application/MBSite.Application.csproj" />
+    <Project Path="src/MBSite.Domain/MBSite.Domain.csproj" />
+    <Project Path="src/MBSite.Infrastructure/MBSite.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/MBSite.Tests/MBSite.Tests.csproj" />
+  </Folder>
+</Solution>

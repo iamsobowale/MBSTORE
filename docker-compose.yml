@@ -1,0 +1,60 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: mbsite-db
+    environment:
+      POSTGRES_DB: mbsite
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      # Host 5433 to avoid clashing with other local Postgres instances.
+      - "5433:5432"
+    volumes:
+      - mbsite_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d mbsite"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mbsite-api
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__Default: "Host=db;Port=5432;Database=mbsite;Username=postgres;Password=${POSTGRES_PASSWORD:-postgres}"
+      Jwt__Key: ${JWT_KEY}
+      Jwt__Issuer: MBSite
+      Jwt__Audience: MBSite
+      Seed__AdminEmail: ${SEED_ADMIN_EMAIL:-admin@mb.local}
+      Seed__AdminPassword: ${SEED_ADMIN_PASSWORD:-Admin123!}
+      Payments__Provider: ${PAYMENTS_PROVIDER:-Fake}
+      Payments__ReturnBaseUrl: ${FRONTEND_URL:-http://localhost}
+      Payments__Paystack__SecretKey: ${PAYSTACK_SECRET_KEY:-}
+      Payments__Paystack__PublicKey: ${PAYSTACK_PUBLIC_KEY:-}
+      Cors__AllowedOrigins__0: ${FRONTEND_URL:-http://localhost}
+      Notifications__StoreUrl: ${FRONTEND_URL:-http://localhost}
+      Storage__PublicBaseUrl: ${PUBLIC_BASE_URL:-http://localhost/api}
+    volumes:
+      - mbsite_uploads:/app/wwwroot/uploads
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: mbsite-frontend
+    depends_on:
+      - api
+    ports:
+      - "80:80"
+
+volumes:
+  mbsite_pgdata:
+  mbsite_uploads:

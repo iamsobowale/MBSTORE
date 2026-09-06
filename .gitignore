@@ -1,0 +1,32 @@
+# .NET
+bin/
+obj/
+*.user
+.vs/
+
+# EF
+*.db
+
+# Locally uploaded images (dev only; production uses Cloudinary)
+backend/src/MBSite.Api/wwwroot/uploads/
+
+# Node / React
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Env & secrets
+.env
+.env.*
+!.env.example
+appsettings.*.local.json
+
+# IDE
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Logs
+*.log
