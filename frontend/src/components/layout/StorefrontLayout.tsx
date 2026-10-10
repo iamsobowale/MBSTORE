@@ -1,20 +1,30 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import { useCart } from "../../features/cart/CartContext";
 import { MbLogo } from "../MbLogo";
+import { AnnouncementBar } from "../AnnouncementBar";
 
-/** Public storefront shell: header, page outlet, footer. Themed via CSS variables. */
+const NAV = [
+  { to: "/shop", label: "Shop" },
+  { to: "/track", label: "Track" },
+];
+
+/** Public storefront shell: announcement bar, header, page outlet, footer. */
 export function StorefrontLayout() {
   const { itemCount } = useCart();
+  const { pathname } = useLocation();
+
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+      <AnnouncementBar />
+
       <header
         style={{
           position: "sticky",
           top: 0,
           zIndex: 20,
           borderBottom: "1px solid var(--color-border)",
-          background: "color-mix(in srgb, var(--color-bg) 88%, transparent)",
-          backdropFilter: "saturate(140%) blur(10px)",
+          background: "color-mix(in srgb, var(--color-bg) 85%, transparent)",
+          backdropFilter: "saturate(140%) blur(12px)",
         }}
       >
         <div
@@ -29,10 +39,31 @@ export function StorefrontLayout() {
           <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
             <MbLogo size="md" />
           </Link>
-          <nav style={{ display: "flex", gap: "var(--space-8)", textTransform: "uppercase", letterSpacing: "0.12em", fontSize: "var(--text-xs)", fontWeight: 600 }}>
-            <Link to="/shop">Shop</Link>
-            <Link to="/track">Track</Link>
-            <Link to="/cart">Cart{itemCount > 0 ? ` (${itemCount})` : ""}</Link>
+          <nav
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "var(--space-8)",
+              textTransform: "uppercase",
+              letterSpacing: "0.12em",
+              fontSize: "var(--text-xs)",
+              fontWeight: 600,
+            }}
+          >
+            {NAV.map((item) => (
+              <Link
+                key={item.to}
+                to={item.to}
+                className="mb-nav-link"
+                data-active={pathname.startsWith(item.to)}
+              >
+                {item.label}
+              </Link>
+            ))}
+            <Link to="/cart" className="mb-cart mb-nav-link" data-active={pathname.startsWith("/cart")}>
+              Cart
+              {itemCount > 0 && <span className="mb-cart__count">{itemCount}</span>}
+            </Link>
           </nav>
         </div>
       </header>
@@ -40,6 +71,46 @@ export function StorefrontLayout() {
       <main style={{ flex: 1 }}>
         <Outlet />
       </main>
+
+      {/* Newsletter band */}
+      <section style={{ background: "var(--color-secondary)", color: "var(--color-accent)" }}>
+        <div
+          className="container"
+          style={{
+            padding: "var(--space-16) 0",
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "var(--space-8)",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <div style={{ maxWidth: 420 }}>
+            <p className="eyebrow" style={{ color: "var(--color-accent)", opacity: 0.6 }}>
+              Stay in the loop
+            </p>
+            <h2 style={{ fontSize: "var(--text-2xl)", textTransform: "uppercase", marginTop: "var(--space-3)" }}>
+              Join the movement
+            </h2>
+            <p style={{ opacity: 0.75, marginTop: "var(--space-3)" }}>
+              Early access to drops, members-only offers, and training tips — straight to your inbox.
+            </p>
+          </div>
+          <form
+            onSubmit={(e) => e.preventDefault()}
+            style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-3)", flex: "1 1 320px", maxWidth: 480 }}
+          >
+            <input className="mb-newsletter-input" type="email" placeholder="Enter your email" required />
+            <button
+              type="submit"
+              className="mb-btn"
+              style={{ background: "var(--color-accent)", color: "var(--color-primary)", borderColor: "var(--color-accent)" }}
+            >
+              Subscribe
+            </button>
+          </form>
+        </div>
+      </section>
 
       <footer style={{ background: "var(--color-primary)", color: "var(--color-accent)", padding: "var(--space-16) 0 var(--space-8)" }}>
         <div className="container">

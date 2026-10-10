@@ -4,6 +4,7 @@ import { formatMoney } from "../lib/format";
 
 /** Clean product card: image, name, price, colors, out-of-stock state. */
 export function ProductCard({ product }: { product: ProductListItem }) {
+  const onSale = !!product.compareAtPrice && product.compareAtPrice > product.price;
   return (
     <Link to={`/product/${product.slug}`} className="mb-card">
       <div className="mb-card__media">
@@ -12,29 +13,24 @@ export function ProductCard({ product }: { product: ProductListItem }) {
         ) : (
           <div style={{ width: "100%", height: "100%" }} />
         )}
+        {onSale && (
+          <span className="mb-badge" style={{ position: "absolute", top: "var(--space-3)", left: "var(--space-3)" }}>
+            Sale
+          </span>
+        )}
         {!product.inStock && (
           <span
-            style={{
-              position: "absolute",
-              top: "var(--space-3)",
-              left: "var(--space-3)",
-              background: "var(--color-primary)",
-              color: "var(--color-accent)",
-              fontSize: "var(--text-xs)",
-              padding: "3px 10px",
-              borderRadius: "var(--radius-sm)",
-              textTransform: "uppercase",
-              letterSpacing: "0.1em",
-              fontWeight: 600,
-            }}
+            className="mb-badge"
+            style={{ position: "absolute", top: "var(--space-3)", right: "var(--space-3)", background: "var(--color-secondary)" }}
           >
             Sold out
           </span>
         )}
+        {product.inStock && <span className="mb-card__peek">View product</span>}
       </div>
 
       <div style={{ marginTop: "var(--space-4)" }}>
-        <div style={{ fontWeight: 600, fontSize: "var(--text-base)" }}>{product.name}</div>
+        <div className="mb-card__name">{product.name}</div>
         <div style={{ display: "flex", gap: "var(--space-2)", alignItems: "baseline", marginTop: 2 }}>
           {product.compareAtPrice && product.compareAtPrice > product.price && (
             <span style={{ color: "var(--color-muted)", textDecoration: "line-through", fontSize: "var(--text-sm)" }}>

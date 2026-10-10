@@ -68,45 +68,66 @@ export function ShopPage() {
     </section>
 
     <div className="container" style={{ padding: "var(--space-12) 0" }}>
-      {/* Controls */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-3)", marginBottom: "var(--space-8)" }}>
+      {/* Controls — search on the left, filters on the right */}
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "var(--space-3)",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginBottom: "var(--space-8)",
+          paddingBottom: "var(--space-6)",
+          borderBottom: "1px solid var(--color-border)",
+        }}
+      >
         <input
+          className="mb-input"
           placeholder="Search products…"
           defaultValue={search}
           onKeyDown={(e) => {
             if (e.key === "Enter") patch({ search: (e.target as HTMLInputElement).value });
           }}
-          style={ctrl}
+          style={{ flex: "1 1 240px", maxWidth: 360 }}
         />
-        <select value={category} onChange={(e) => patch({ category: e.target.value })} style={ctrl}>
-          <option value="">All categories</option>
-          {categories?.map((c) => (
-            <option key={c.id} value={c.slug}>{c.name}</option>
-          ))}
-        </select>
-        <select value={size} onChange={(e) => patch({ size: e.target.value })} style={ctrl}>
-          <option value="">All sizes</option>
-          {["XS", "S", "M", "L", "XL"].map((s) => (
-            <option key={s} value={s}>{s}</option>
-          ))}
-        </select>
-        <select value={sort} onChange={(e) => patch({ sort: e.target.value })} style={ctrl}>
-          {SORT_OPTIONS.map((o) => (
-            <option key={o.value} value={o.value}>{o.label}</option>
-          ))}
-        </select>
-        <label style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
-          <input
-            type="checkbox"
-            checked={inStock}
-            onChange={(e) => patch({ inStock: e.target.checked ? "true" : null })}
-          />
-          In stock only
-        </label>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-3)", alignItems: "center" }}>
+          <select className="mb-select" value={category} onChange={(e) => patch({ category: e.target.value })}>
+            <option value="">All categories</option>
+            {categories?.map((c) => (
+              <option key={c.id} value={c.slug}>{c.name}</option>
+            ))}
+          </select>
+          <select className="mb-select" value={size} onChange={(e) => patch({ size: e.target.value })}>
+            <option value="">All sizes</option>
+            {["XS", "S", "M", "L", "XL"].map((s) => (
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
+          <select className="mb-select" value={sort} onChange={(e) => patch({ sort: e.target.value })}>
+            {SORT_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>{o.label}</option>
+            ))}
+          </select>
+          <label className="mb-check">
+            <input
+              type="checkbox"
+              checked={inStock}
+              onChange={(e) => patch({ inStock: e.target.checked ? "true" : null })}
+            />
+            In stock
+          </label>
+        </div>
       </div>
 
+      {/* Result count */}
+      {data && (
+        <p className="eyebrow" style={{ marginBottom: "var(--space-6)" }}>
+          {data.totalCount} {data.totalCount === 1 ? "product" : "products"}
+        </p>
+      )}
+
       {/* Grid */}
-      {isLoading && <p>Loading products…</p>}
+      {isLoading && <p style={{ color: "var(--color-muted)" }}>Loading products…</p>}
       {isError && <p style={{ color: "var(--color-danger)" }}>Failed to load products.</p>}
       {data && data.items.length === 0 && <p style={{ color: "var(--color-muted)" }}>No products match your filters.</p>}
 
@@ -114,26 +135,28 @@ export function ShopPage() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
             gap: "var(--space-8)",
           }}
         >
-          {data.items.map((p) => (
-            <ProductCard key={p.id} product={p} />
+          {data.items.map((p, i) => (
+            <div key={p.id} className="mb-fade-up" style={{ animationDelay: `${Math.min(i * 0.05, 0.4)}s` }}>
+              <ProductCard product={p} />
+            </div>
           ))}
         </div>
       )}
 
       {/* Pagination */}
       {data && data.totalPages > 1 && (
-        <div style={{ display: "flex", gap: "var(--space-4)", justifyContent: "center", marginTop: "var(--space-12)" }}>
-          <button disabled={page <= 1} onClick={() => patch({ page: String(page - 1) })} style={pageBtn}>
+        <div style={{ display: "flex", gap: "var(--space-4)", justifyContent: "center", alignItems: "center", marginTop: "var(--space-16)" }}>
+          <button className="mb-btn mb-btn--ghost" disabled={page <= 1} onClick={() => patch({ page: String(page - 1) })}>
             Previous
           </button>
-          <span style={{ alignSelf: "center", color: "var(--color-muted)" }}>
-            Page {data.page} of {data.totalPages}
+          <span className="eyebrow">
+            Page {data.page} / {data.totalPages}
           </span>
-          <button disabled={page >= data.totalPages} onClick={() => patch({ page: String(page + 1) })} style={pageBtn}>
+          <button className="mb-btn mb-btn--ghost" disabled={page >= data.totalPages} onClick={() => patch({ page: String(page + 1) })}>
             Next
           </button>
         </div>
@@ -142,18 +165,3 @@ export function ShopPage() {
     </>
   );
 }
-
-const ctrl = {
-  padding: "var(--space-2) var(--space-3)",
-  border: "1px solid var(--color-border)",
-  borderRadius: "var(--radius-sm)",
-  background: "var(--color-bg)",
-} as const;
-
-const pageBtn = {
-  padding: "var(--space-2) var(--space-6)",
-  border: "1px solid var(--color-border)",
-  borderRadius: "var(--radius-sm)",
-  background: "var(--color-bg)",
-  cursor: "pointer",
-} as const;
