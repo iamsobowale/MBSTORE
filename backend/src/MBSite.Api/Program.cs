@@ -23,6 +23,18 @@ var uploadsRoot = Path.Combine(builder.Environment.ContentRootPath, "wwwroot", "
 Directory.CreateDirectory(uploadsRoot);
 builder.Configuration["Storage:LocalPath"] = uploadsRoot;
 
+// --- Build connection string from individual DB components (Render workaround) ---
+var dbHost = builder.Configuration["DB_HOST"];
+var dbPort = builder.Configuration["DB_PORT"] ?? "5432";
+var dbUser = builder.Configuration["DB_USER"];
+var dbPassword = builder.Configuration["DB_PASSWORD"];
+var dbName = builder.Configuration["DB_NAME"];
+if (!string.IsNullOrEmpty(dbHost) && !string.IsNullOrEmpty(dbUser) && !string.IsNullOrEmpty(dbPassword) && !string.IsNullOrEmpty(dbName))
+{
+    var connectionString = $"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUser};Password={dbPassword};SSL Mode=Require;";
+    builder.Configuration["ConnectionStrings:Default"] = connectionString;
+}
+
 // --- Application + Infrastructure ---
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
