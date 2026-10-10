@@ -63,66 +63,72 @@ export function DiscountsPage() {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--space-6)" }}>
-        <h1 style={{ fontSize: "var(--text-2xl)", margin: 0 }}>Discounts</h1>
-        <button onClick={() => setEditing("new")} style={primaryBtn}>+ New discount</button>
+      <div className="mb-section-head" style={{ marginBottom: "var(--space-6)" }}>
+        <div>
+          <p className="eyebrow" style={{ marginBottom: "var(--space-1)" }}>Promotions</p>
+          <h1 style={{ fontSize: "var(--text-2xl)" }}>Discounts</h1>
+        </div>
+        <button onClick={() => setEditing("new")} className="mb-btn" style={{ padding: "var(--space-2) var(--space-6)" }}>+ New discount</button>
       </div>
 
       <input
+        className="mb-input"
         placeholder="Search codes…"
         value={search}
         onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-        style={{ padding: "var(--space-2) var(--space-3)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-sm)", marginBottom: "var(--space-6)", width: 280 }}
+        style={{ marginBottom: "var(--space-6)", width: 320 }}
       />
 
-      {isLoading ? <p>Loading…</p> : data?.items.length === 0 ? <p style={{ color: "var(--color-muted)" }}>No discounts found.</p> : (
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr style={{ textAlign: "left", borderBottom: "1px solid var(--color-border)", color: "var(--color-muted)", fontSize: "var(--text-sm)" }}>
-              <th style={th}>Code</th>
-              <th style={th}>Type</th>
-              <th style={th}>Value</th>
-              <th style={th}>Usage</th>
-              <th style={th}>Expires</th>
-              <th style={th}>Status</th>
-              <th style={th}></th>
-            </tr>
-          </thead>
-          <tbody>
-            {data?.items.map((d) => (
-              <tr key={d.id} style={{ borderBottom: "1px solid var(--color-border)" }}>
-                <td style={{ ...td, fontWeight: 700 }}>{d.code}</td>
-                <td style={td}>{DISCOUNT_TYPE_LABEL[d.type] ?? d.type}</td>
-                <td style={td}>{d.type === "Percentage" ? `${d.value}%` : formatMoney(d.value)}</td>
-                <td style={td}>{d.usageCount}{d.maxUsage ? ` / ${d.maxUsage}` : ""}</td>
-                <td style={{ ...td, color: "var(--color-muted)", fontSize: "var(--text-sm)" }}>
-                  {d.expiresAt ? new Date(d.expiresAt).toLocaleDateString() : "—"}
-                </td>
-                <td style={td}>
-                  <span style={{ color: d.isActive ? "var(--color-success)" : "var(--color-danger)", fontSize: "var(--text-sm)" }}>
-                    {d.isActive ? "Active" : "Inactive"}
-                  </span>
-                </td>
-                <td style={{ ...td, textAlign: "right" }}>
-                  <button onClick={() => setEditing(d)} style={linkBtn}>Edit</button>
-                  <button
-                    onClick={() => toggle.mutate({ id: d.id, active: !d.isActive })}
-                    style={{ ...linkBtn, color: d.isActive ? "var(--color-danger)" : "var(--color-success)", background: "none", border: "none", cursor: "pointer" }}
-                  >
-                    {d.isActive ? "Deactivate" : "Activate"}
-                  </button>
-                </td>
+      {isLoading ? <p style={{ color: "var(--color-muted)" }}>Loading…</p> : data?.items.length === 0 ? <p style={{ color: "var(--color-muted)" }}>No discounts found.</p> : (
+        <div className="mb-panel" style={{ padding: 0, overflow: "hidden" }}>
+          <table className="mb-table">
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Type</th>
+                <th>Value</th>
+                <th>Usage</th>
+                <th>Expires</th>
+                <th>Status</th>
+                <th></th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {data?.items.map((d) => (
+                <tr key={d.id}>
+                  <td style={{ fontWeight: 700, letterSpacing: "0.05em" }}>{d.code}</td>
+                  <td>{DISCOUNT_TYPE_LABEL[d.type] ?? d.type}</td>
+                  <td>{d.type === "Percentage" ? `${d.value}%` : formatMoney(d.value)}</td>
+                  <td>{d.usageCount}{d.maxUsage ? ` / ${d.maxUsage}` : ""}</td>
+                  <td style={{ color: "var(--color-muted)" }}>
+                    {d.expiresAt ? new Date(d.expiresAt).toLocaleDateString() : "—"}
+                  </td>
+                  <td>
+                    <span style={{ color: d.isActive ? "var(--color-success)" : "var(--color-danger)", fontSize: "var(--text-sm)", fontWeight: 600 }}>
+                      {d.isActive ? "● Active" : "○ Inactive"}
+                    </span>
+                  </td>
+                  <td style={{ textAlign: "right" }}>
+                    <button onClick={() => setEditing(d)} style={linkBtn}>Edit</button>
+                    <button
+                      onClick={() => toggle.mutate({ id: d.id, active: !d.isActive })}
+                      style={{ ...linkBtn, color: d.isActive ? "var(--color-danger)" : "var(--color-success)" }}
+                    >
+                      {d.isActive ? "Deactivate" : "Activate"}
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
 
       {data && data.totalPages > 1 && (
         <div style={{ display: "flex", gap: "var(--space-4)", marginTop: "var(--space-6)", alignItems: "center" }}>
-          <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} style={pageBtn}>Previous</button>
-          <span style={{ color: "var(--color-muted)" }}>Page {data.page} of {data.totalPages}</span>
-          <button disabled={page >= data.totalPages} onClick={() => setPage((p) => p + 1)} style={pageBtn}>Next</button>
+          <button className="mb-btn mb-btn--ghost" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>Previous</button>
+          <span className="eyebrow">Page {data.page} / {data.totalPages}</span>
+          <button className="mb-btn mb-btn--ghost" disabled={page >= data.totalPages} onClick={() => setPage((p) => p + 1)}>Next</button>
         </div>
       )}
     </div>
@@ -185,18 +191,14 @@ function DiscountForm({ initial, onSave, onCancel, isPending, error }: {
       {error && <p style={{ color: "var(--color-danger)", marginBottom: "var(--space-4)" }}>{(error as { response?: { data?: { detail?: string; title?: string } } }).response?.data?.detail ?? error.message}</p>}
 
       <div style={{ display: "flex", gap: "var(--space-3)" }}>
-        <button onClick={() => onSave(form)} disabled={isPending} style={primaryBtn}>{isPending ? "Saving…" : "Save"}</button>
-        <button onClick={onCancel} style={pageBtn}>Cancel</button>
+        <button onClick={() => onSave(form)} disabled={isPending} className="mb-btn">{isPending ? "Saving…" : "Save"}</button>
+        <button onClick={onCancel} className="mb-btn mb-btn--ghost">Cancel</button>
       </div>
     </div>
   );
 }
 
-const th = { padding: "var(--space-2)" } as const;
-const td = { padding: "var(--space-2)", verticalAlign: "middle" } as const;
-const primaryBtn = { padding: "var(--space-2) var(--space-6)", background: "var(--color-primary)", color: "var(--color-accent)", borderRadius: "var(--radius-sm)", fontWeight: 700, border: "none", cursor: "pointer" } as const;
 const linkBtn = { marginLeft: "var(--space-3)", fontSize: "var(--text-sm)", background: "none", border: "none", cursor: "pointer" } as const;
-const pageBtn = { padding: "var(--space-2) var(--space-4)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-sm)", background: "var(--color-bg)", cursor: "pointer" } as const;
 const fieldGroup = { marginBottom: "var(--space-4)" } as const;
 const label = { display: "block", marginBottom: "var(--space-1)", fontSize: "var(--text-sm)", color: "var(--color-muted)" } as const;
 const input = { width: "100%", padding: "var(--space-2) var(--space-3)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-sm)", fontFamily: "inherit" } as const;
