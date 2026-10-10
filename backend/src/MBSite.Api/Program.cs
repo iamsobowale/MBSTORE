@@ -92,11 +92,12 @@ builder.Services.AddRateLimiter(opts =>
 
 // --- CORS for the React storefront/admin ---
 const string CorsPolicy = "StorefrontCors";
-var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
-    ?? new[] { "http://localhost:5173" };
 builder.Services.AddCors(options =>
     options.AddPolicy(CorsPolicy, policy =>
-        policy.WithOrigins(allowedOrigins).AllowAnyHeader().AllowAnyMethod()));
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod()));
 
 var app = builder.Build();
 
