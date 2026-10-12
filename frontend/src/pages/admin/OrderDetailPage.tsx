@@ -43,7 +43,7 @@ export function OrderDetailPage() {
         <OrderStatusBadge status={order.status} />
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "var(--space-8)", alignItems: "start" }}>
+      <div className="mb-detail-grid" style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "var(--space-8)", alignItems: "start" }}>
         <div>
           <Section title="Items">
             {order.items.map((i, idx) => (

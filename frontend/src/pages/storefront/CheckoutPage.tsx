@@ -59,7 +59,7 @@ export function CheckoutPage() {
   };
 
   return (
-    <form onSubmit={submit} className="container" style={{ padding: "var(--space-12) 0", display: "grid", gridTemplateColumns: "minmax(0, 1.4fr) minmax(300px, 1fr)", gap: "var(--space-12)" }}>
+    <form onSubmit={submit} className="container mb-split" style={{ padding: "var(--space-12) 0", display: "grid", gridTemplateColumns: "minmax(0, 1.4fr) minmax(300px, 1fr)", gap: "var(--space-12)" }}>
       <div>
         <h1 style={{ fontSize: "var(--text-2xl)", marginTop: 0 }}>Checkout</h1>
         <p style={{ color: "var(--color-muted)", marginTop: 0 }}>No account required — check out as a guest.</p>

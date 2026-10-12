@@ -41,8 +41,9 @@ export function AdminLayout() {
     exact ? pathname === to : pathname === to || pathname.startsWith(to + "/");
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "var(--color-surface)" }}>
+    <div className="mb-admin-shell" style={{ display: "flex", minHeight: "100vh", background: "var(--color-surface)" }}>
       <aside
+        className="mb-admin-aside"
         style={{
           width: 248,
           borderRight: "1px solid var(--color-border)",
@@ -62,7 +63,7 @@ export function AdminLayout() {
           </div>
         </div>
 
-        <nav style={{ display: "flex", flexDirection: "column", gap: "var(--space-1)", flex: 1 }}>
+        <nav className="mb-admin-navlist" style={{ display: "flex", flexDirection: "column", gap: "var(--space-1)", flex: 1 }}>
           {navItems.map((item) => (
             <Link key={item.to} to={item.to} className="mb-admin-nav" data-active={isActive(item.to, item.exact)}>
               {ICONS[item.icon]}
@@ -104,7 +105,7 @@ export function AdminLayout() {
         </div>
       </aside>
 
-      <main style={{ flex: 1, padding: "var(--space-8)", maxWidth: "100%", overflow: "auto" }}>
+      <main className="mb-admin-main" style={{ flex: 1, padding: "var(--space-8)", maxWidth: "100%", overflow: "auto" }}>
         <Outlet />
       </main>
     </div>

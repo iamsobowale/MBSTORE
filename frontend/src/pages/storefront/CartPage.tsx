@@ -18,7 +18,7 @@ export function CartPage() {
   const hasIssues = cart.items.some((i) => !i.available);
 
   return (
-    <div className="container" style={{ padding: "var(--space-12) 0", display: "grid", gridTemplateColumns: "minmax(0, 2fr) minmax(280px, 1fr)", gap: "var(--space-12)" }}>
+    <div className="container mb-split" style={{ padding: "var(--space-12) 0", display: "grid", gridTemplateColumns: "minmax(0, 2fr) minmax(280px, 1fr)", gap: "var(--space-12)" }}>
       <div>
         <h1 style={{ fontSize: "var(--text-2xl)", marginTop: 0 }}>Cart</h1>
         {cart.items.map((item) => (

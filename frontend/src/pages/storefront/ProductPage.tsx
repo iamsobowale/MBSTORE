@@ -61,7 +61,7 @@ export function ProductPage() {
   };
 
   return (
-    <div className="container" style={{ padding: "var(--space-12) 0", display: "grid", gap: "var(--space-12)", gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)" }}>
+    <div className="container mb-split" style={{ padding: "var(--space-12) 0", display: "grid", gap: "var(--space-12)", gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)" }}>
       {/* Gallery */}
       <div>
         <div style={{ aspectRatio: "4 / 5", background: "var(--color-surface)", borderRadius: "var(--radius-md)", overflow: "hidden" }}>

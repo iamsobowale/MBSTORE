@@ -40,6 +40,7 @@ export function StorefrontLayout() {
             <MbLogo size="md" />
           </Link>
           <nav
+            className="mb-nav-compact"
             style={{
               display: "flex",
               alignItems: "center",
@@ -114,7 +115,7 @@ export function StorefrontLayout() {
 
       <footer style={{ background: "var(--color-primary)", color: "var(--color-accent)", padding: "var(--space-16) 0 var(--space-8)" }}>
         <div className="container">
-          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: "var(--space-8)", alignItems: "start" }}>
+          <div className="mb-footer-grid" style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: "var(--space-8)", alignItems: "start" }}>
             <div>
               <MbLogo size="md" inverted />
               <p style={{ opacity: 0.6, maxWidth: 320, marginTop: "var(--space-3)" }}>

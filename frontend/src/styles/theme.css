@@ -691,6 +691,82 @@ img {
   opacity: 0.6;
 }
 
+/* ─── Responsive / mobile ─────────────────────────────────────────────── */
+@media (max-width: 860px) {
+  :root {
+    /* Tighten the big end of the scales so sections aren't oversized on phones */
+    --space-16: 3rem;
+    --space-12: 2rem;
+    --space-8: 1.5rem;
+    --text-2xl: 1.6rem;
+    --text-xl: 1.25rem;
+    --text-3xl: clamp(2.25rem, 10vw, 3.25rem);
+    --text-4xl: clamp(2.5rem, 12vw, 3.75rem);
+  }
+
+  .container {
+    padding: 0 var(--space-4);
+  }
+
+  /* Tables scroll horizontally instead of overflowing the viewport */
+  .mb-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Admin shell stacks: sidebar becomes a top bar with horizontal nav */
+  .mb-admin-shell {
+    flex-direction: column;
+  }
+  .mb-admin-aside {
+    position: static !important;
+    width: 100% !important;
+    height: auto !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .mb-admin-navlist {
+    flex-direction: row !important;
+    overflow-x: auto;
+    gap: var(--space-2) !important;
+    padding-bottom: var(--space-2);
+    -webkit-overflow-scrolling: touch;
+  }
+  .mb-admin-navlist .mb-admin-nav {
+    white-space: nowrap;
+  }
+  .mb-admin-main {
+    padding: var(--space-6) var(--space-4) !important;
+  }
+
+  /* Stack multi-column layouts */
+  .mb-footer-grid,
+  .mb-detail-grid,
+  .mb-split {
+    grid-template-columns: 1fr !important;
+    gap: var(--space-8) !important;
+  }
+
+  /* Storefront header: smaller logo gap, tighter nav */
+  .mb-nav-compact {
+    gap: var(--space-4) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .mb-btn {
+    padding: var(--space-3) var(--space-6);
+    font-size: var(--text-xs);
+  }
+  /* Hide the secondary wordmark line on very small screens is unnecessary;
+     keep logo intact. Just ensure hero stats wrap comfortably. */
+  .mb-hero-stats {
+    gap: var(--space-6) !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
