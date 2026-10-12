@@ -140,11 +140,14 @@ export function ProductEditPage() {
 
   return (
     <form onSubmit={submit} style={{ maxWidth: 900 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--space-6)" }}>
-        <h1 style={{ fontSize: "var(--text-2xl)", margin: 0 }}>{isNew ? "New product" : "Edit product"}</h1>
+      <div className="mb-section-head" style={{ marginBottom: "var(--space-6)" }}>
+        <div>
+          <p className="eyebrow" style={{ marginBottom: "var(--space-1)" }}>Catalog</p>
+          <h1 style={{ fontSize: "var(--text-2xl)" }}>{isNew ? "New product" : "Edit product"}</h1>
+        </div>
         <div style={{ display: "flex", gap: "var(--space-3)" }}>
-          <button type="button" onClick={() => navigate("/admin/products")} style={ghostBtn}>Cancel</button>
-          <button type="submit" disabled={save.isPending} style={primaryBtn}>{save.isPending ? "Saving…" : "Save"}</button>
+          <button type="button" onClick={() => navigate("/admin/products")} className="mb-btn mb-btn--ghost">Cancel</button>
+          <button type="submit" disabled={save.isPending} className="mb-btn">{save.isPending ? "Saving…" : "Save"}</button>
         </div>
       </div>
 
@@ -308,18 +311,17 @@ export function ProductEditPage() {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-md)", padding: "var(--space-6)", marginBottom: "var(--space-6)" }}>
-      <h2 style={{ fontSize: "var(--text-lg)", marginTop: 0 }}>{title}</h2>
+    <section className="mb-panel" style={{ marginBottom: "var(--space-6)" }}>
+      <h2 style={{ fontSize: "var(--text-lg)", marginTop: 0, marginBottom: "var(--space-4)" }}>{title}</h2>
       {children}
     </section>
   );
 }
 
 const lbl = { display: "block", marginTop: "var(--space-3)", marginBottom: "var(--space-1)", fontSize: "var(--text-sm)", color: "var(--color-muted)" } as const;
-const inp = { width: "100%", padding: "var(--space-2)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-sm)" } as const;
+const inp = { width: "100%", padding: "var(--space-3) var(--space-4)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-sm)", fontFamily: "inherit", fontSize: "var(--text-sm)" } as const;
 const vth = { padding: "var(--space-1) var(--space-2)" } as const;
 const vtd = { padding: "2px var(--space-2)" } as const;
-const vinp = { width: "100%", padding: "var(--space-1) var(--space-2)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-sm)" } as const;
-const primaryBtn = { padding: "var(--space-2) var(--space-6)", background: "var(--color-primary)", color: "var(--color-accent)", border: "none", borderRadius: "var(--radius-sm)", fontWeight: 700, cursor: "pointer" } as const;
-const ghostBtn = { padding: "var(--space-2) var(--space-6)", background: "var(--color-bg)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-sm)", cursor: "pointer" } as const;
+const vinp = { width: "100%", padding: "var(--space-2)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-sm)", fontFamily: "inherit" } as const;
+const ghostBtn = { padding: "var(--space-2) var(--space-6)", background: "var(--color-bg)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-sm)", cursor: "pointer", fontWeight: 600 } as const;
 const miniBtn = { background: "none", border: "none", cursor: "pointer", padding: 0, fontSize: "var(--text-xs)" } as const;

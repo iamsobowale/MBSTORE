@@ -32,13 +32,13 @@ export function OrderDetailPage() {
     },
   });
 
-  if (isLoading) return <p>Loading…</p>;
+  if (isLoading) return <p style={{ color: "var(--color-muted)" }}>Loading…</p>;
   if (!order) return <p>Order not found. <Link to="/admin/orders">Back to orders</Link></p>;
 
   return (
     <div>
-      <Link to="/admin/orders" style={{ color: "var(--color-muted)", fontSize: "var(--text-sm)" }}>← Orders</Link>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "var(--space-2) 0 var(--space-6)" }}>
+      <Link to="/admin/orders" className="eyebrow mb-nav-link" style={{ color: "var(--color-muted)" }}>← Orders</Link>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "var(--space-3) 0 var(--space-6)" }}>
         <h1 style={{ fontSize: "var(--text-2xl)", margin: 0 }}>{order.publicReference}</h1>
         <OrderStatusBadge status={order.status} />
       </div>
@@ -87,19 +87,21 @@ export function OrderDetailPage() {
             ) : (
               <>
                 <textarea
+                  className="mb-input"
                   placeholder="Optional note (shown in history)…"
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
                   rows={2}
-                  style={{ width: "100%", padding: "var(--space-2)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-sm)", marginBottom: "var(--space-3)", resize: "vertical", fontFamily: "inherit" }}
+                  style={{ width: "100%", marginBottom: "var(--space-3)", resize: "vertical" }}
                 />
                 <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
                   {order.nextStatuses.map((s) => (
                     <button
                       key={s}
+                      className="mb-btn"
                       disabled={transition.isPending}
                       onClick={() => { if (confirm(`Move order to "${ORDER_STATUS_LABEL[s] ?? s}"?`)) transition.mutate(s); }}
-                      style={actionBtn}
+                      style={{ justifyContent: "flex-start" }}
                     >
                       → {ORDER_STATUS_LABEL[s] ?? s}
                     </button>
@@ -121,8 +123,8 @@ export function OrderDetailPage() {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div style={{ marginBottom: "var(--space-8)" }}>
-      <h2 style={{ fontSize: "var(--text-lg)", marginBottom: "var(--space-3)" }}>{title}</h2>
+    <div className="mb-panel" style={{ marginBottom: "var(--space-6)" }}>
+      <h2 style={{ fontSize: "var(--text-lg)", marginBottom: "var(--space-4)" }}>{title}</h2>
       {children}
     </div>
   );
@@ -135,14 +137,3 @@ function Row({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
-
-const actionBtn = {
-  padding: "var(--space-2) var(--space-4)",
-  background: "var(--color-primary)",
-  color: "var(--color-accent)",
-  borderRadius: "var(--radius-sm)",
-  fontWeight: 600,
-  border: "none",
-  cursor: "pointer",
-  textAlign: "left" as const,
-};

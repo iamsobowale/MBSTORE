@@ -41,40 +41,48 @@ export function StoreConfigPage() {
     setForm({ ...form, [key]: value });
 
   return (
-    <div style={{ maxWidth: 560 }}>
-      <h1 style={{ fontSize: "var(--text-2xl)" }}>Store Configuration</h1>
+    <div style={{ maxWidth: 600 }}>
+      <p className="eyebrow" style={{ marginBottom: "var(--space-1)" }}>Branding</p>
+      <h1 style={{ fontSize: "var(--text-2xl)", marginBottom: "var(--space-6)" }}>Store Configuration</h1>
 
-      <label style={labelStyle}>Brand name</label>
-      <input style={inputStyle} value={form.brandName} onChange={(e) => set("brandName", e.target.value)} />
+      <div className="mb-panel" style={{ marginBottom: "var(--space-6)" }}>
+        <h2 style={{ fontSize: "var(--text-lg)", marginBottom: "var(--space-4)" }}>Identity</h2>
+        <label style={labelStyle}>Brand name</label>
+        <input className="mb-input" style={inputStyle} value={form.brandName} onChange={(e) => set("brandName", e.target.value)} />
 
-      <label style={labelStyle}>Logo URL</label>
-      <input style={inputStyle} value={form.logoUrl ?? ""} onChange={(e) => set("logoUrl", e.target.value)} />
+        <label style={labelStyle}>Logo URL</label>
+        <input className="mb-input" style={inputStyle} value={form.logoUrl ?? ""} onChange={(e) => set("logoUrl", e.target.value)} />
+      </div>
 
-      <h2 style={{ fontSize: "var(--text-lg)", marginTop: "var(--space-8)" }}>Theme colors</h2>
-      {colorFields.map((f) => (
-        <div key={f.key} style={{ display: "flex", alignItems: "center", gap: "var(--space-4)", margin: "var(--space-2) 0" }}>
-          <input
-            type="color"
-            value={String(form[f.key] ?? "#000000")}
-            onChange={(e) => set(f.key, e.target.value)}
-          />
-          <span style={{ width: 120 }}>{f.label}</span>
-          <code>{String(form[f.key])}</code>
-        </div>
-      ))}
+      <div className="mb-panel" style={{ marginBottom: "var(--space-6)" }}>
+        <h2 style={{ fontSize: "var(--text-lg)", marginBottom: "var(--space-4)" }}>Theme colors</h2>
+        {colorFields.map((f) => (
+          <div key={f.key} style={{ display: "flex", alignItems: "center", gap: "var(--space-4)", padding: "var(--space-2) 0", borderBottom: "1px solid var(--color-border)" }}>
+            <input
+              type="color"
+              value={String(form[f.key] ?? "#000000")}
+              onChange={(e) => set(f.key, e.target.value)}
+              style={{ width: 40, height: 40, border: "none", background: "none", cursor: "pointer", padding: 0 }}
+            />
+            <span style={{ width: 120, fontWeight: 500 }}>{f.label}</span>
+            <code style={{ color: "var(--color-muted)" }}>{String(form[f.key])}</code>
+          </div>
+        ))}
+      </div>
 
-      <button
-        style={buttonStyle}
-        disabled={mutation.isPending}
-        onClick={() => mutation.mutate(form)}
-      >
-        {mutation.isPending ? "Saving…" : "Save changes"}
-      </button>
-      {mutation.isSuccess && <span style={{ marginLeft: "var(--space-4)", color: "var(--color-success)" }}>Saved</span>}
+      <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)" }}>
+        <button
+          className="mb-btn"
+          disabled={mutation.isPending}
+          onClick={() => mutation.mutate(form)}
+        >
+          {mutation.isPending ? "Saving…" : "Save changes"}
+        </button>
+        {mutation.isSuccess && <span style={{ color: "var(--color-success)", fontWeight: 600 }}>✓ Saved</span>}
+      </div>
     </div>
   );
 }
 
 const labelStyle = { display: "block", marginTop: "var(--space-4)", fontSize: "var(--text-sm)", color: "var(--color-muted)" } as const;
-const inputStyle = { width: "100%", padding: "var(--space-2)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-sm)" } as const;
-const buttonStyle = { marginTop: "var(--space-8)", padding: "var(--space-3) var(--space-8)", background: "var(--color-primary)", color: "var(--color-accent)", border: "none", borderRadius: "var(--radius-sm)", fontWeight: 700, cursor: "pointer" } as const;
+const inputStyle = { width: "100%" } as const;
