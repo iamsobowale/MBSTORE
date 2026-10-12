@@ -61,9 +61,9 @@ export function ShopPage() {
       <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1920&q=80"
         alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.35 }} />
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(0,0,0,0.4), rgba(0,0,0,0.7))" }} />
-      <div className="container" style={{ position: "relative", padding: "var(--space-16) 0" }}>
+      <div className="container" style={{ position: "relative", padding: "var(--space-12) 0" }}>
         <p className="eyebrow" style={{ color: "var(--color-accent)", opacity: 0.8 }}>{category || "All"} collection</p>
-        <h1 style={{ fontSize: "var(--text-3xl)", textTransform: "uppercase", marginTop: "var(--space-2)" }}>Shop</h1>
+        <h1 style={{ fontSize: "var(--text-2xl)", textTransform: "uppercase", marginTop: "var(--space-2)" }}>Shop</h1>
       </div>
     </section>
 
