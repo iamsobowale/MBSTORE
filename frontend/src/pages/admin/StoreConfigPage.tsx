@@ -5,6 +5,7 @@ import {
   updateStoreSettings,
   type StoreSettings,
 } from "../../features/storeConfig/api";
+import { uploadImage } from "../../features/admin/catalogApi";
 
 const colorFields: { key: keyof StoreSettings; label: string }[] = [
   { key: "primaryColor", label: "Primary" },
@@ -22,6 +23,8 @@ export function StoreConfigPage() {
   const qc = useQueryClient();
   const { data } = useQuery({ queryKey: ["store-settings"], queryFn: fetchStoreSettings });
   const [form, setForm] = useState<StoreSettings | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   useEffect(() => {
     if (data) setForm(data);
@@ -37,8 +40,21 @@ export function StoreConfigPage() {
 
   if (!form) return <p>Loading…</p>;
 
-  const set = (key: keyof StoreSettings, value: string) =>
+  const set = (key: keyof StoreSettings, value: string | null) =>
     setForm({ ...form, [key]: value });
+
+  const handleLogoUpload = async (file: File) => {
+    setUploading(true);
+    setUploadError(null);
+    try {
+      const url = await uploadImage(file);
+      setForm((f) => (f ? { ...f, logoUrl: url } : f));
+    } catch {
+      setUploadError("Upload failed — check the file type and size.");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   return (
     <div style={{ maxWidth: 600 }}>
@@ -50,8 +66,38 @@ export function StoreConfigPage() {
         <label style={labelStyle}>Brand name</label>
         <input className="mb-input" style={inputStyle} value={form.brandName} onChange={(e) => set("brandName", e.target.value)} />
 
-        <label style={labelStyle}>Logo URL</label>
-        <input className="mb-input" style={inputStyle} value={form.logoUrl ?? ""} onChange={(e) => set("logoUrl", e.target.value)} />
+        <label style={labelStyle}>Logo</label>
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)", flexWrap: "wrap" }}>
+          {/* Preview on a neutral surface so transparent logos are visible */}
+          <div style={{ width: 140, height: 56, border: "1px solid var(--color-border)", borderRadius: "var(--radius-sm)", background: "var(--color-surface)", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", flexShrink: 0 }}>
+            {form.logoUrl ? (
+              <img src={form.logoUrl} alt="Logo preview" style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }} />
+            ) : (
+              <span style={{ color: "var(--color-muted)", fontSize: "var(--text-xs)" }}>No logo</span>
+            )}
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
+            <label className="mb-btn mb-btn--ghost" style={{ cursor: uploading ? "wait" : "pointer" }}>
+              {uploading ? "Uploading…" : form.logoUrl ? "Replace logo" : "Upload logo"}
+              <input
+                type="file"
+                accept="image/*"
+                disabled={uploading}
+                style={{ display: "none" }}
+                onChange={(e) => { const f = e.target.files?.[0]; if (f) handleLogoUpload(f); e.target.value = ""; }}
+              />
+            </label>
+            {form.logoUrl && (
+              <button type="button" onClick={() => set("logoUrl", null)} style={{ background: "none", border: "none", color: "var(--color-danger)", cursor: "pointer", fontSize: "var(--text-sm)", textAlign: "left", padding: 0 }}>
+                Remove logo
+              </button>
+            )}
+          </div>
+        </div>
+        {uploadError && <div style={{ color: "var(--color-danger)", marginTop: "var(--space-2)", fontSize: "var(--text-sm)" }}>{uploadError}</div>}
+        <p style={{ color: "var(--color-muted)", fontSize: "var(--text-xs)", marginTop: "var(--space-2)" }}>
+          PNG or SVG with a transparent background works best. Remember to Save changes below.
+        </p>
       </div>
 
       <div className="mb-panel" style={{ marginBottom: "var(--space-6)" }}>

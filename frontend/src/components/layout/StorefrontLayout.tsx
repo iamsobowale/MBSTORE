@@ -1,5 +1,7 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { useCart } from "../../features/cart/CartContext";
+import { fetchStoreSettings } from "../../features/storeConfig/api";
 import { MbLogo } from "../MbLogo";
 import { AnnouncementBar } from "../AnnouncementBar";
 
@@ -12,6 +14,8 @@ const NAV = [
 export function StorefrontLayout() {
   const { itemCount } = useCart();
   const { pathname } = useLocation();
+  const { data: settings } = useQuery({ queryKey: ["store-settings"], queryFn: fetchStoreSettings });
+  const logoUrl = settings?.logoUrl;
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
@@ -37,7 +41,7 @@ export function StorefrontLayout() {
           }}
         >
           <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
-            <MbLogo size="md" />
+            <MbLogo size="md" logoUrl={logoUrl} />
           </Link>
           <nav
             className="mb-nav-compact"
@@ -117,7 +121,7 @@ export function StorefrontLayout() {
         <div className="container">
           <div className="mb-footer-grid" style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: "var(--space-8)", alignItems: "start" }}>
             <div>
-              <MbLogo size="md" inverted />
+              <MbLogo size="md" inverted logoUrl={logoUrl} />
               <p style={{ opacity: 0.6, maxWidth: 320, marginTop: "var(--space-3)" }}>
                 Premium activewear engineered for performance and built for the street.
               </p>

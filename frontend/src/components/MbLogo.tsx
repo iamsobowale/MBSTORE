@@ -1,8 +1,19 @@
-type Props = { size?: "sm" | "md" | "lg"; inverted?: boolean };
+type Props = { size?: "sm" | "md" | "lg"; inverted?: boolean; logoUrl?: string | null };
 
-export function MbLogo({ size = "md", inverted = false }: Props) {
+export function MbLogo({ size = "md", inverted = false, logoUrl }: Props) {
   const scale = size === "sm" ? 0.75 : size === "lg" ? 1.4 : 1;
   const color = inverted ? "#ffffff" : "currentColor";
+
+  // When the admin has uploaded a custom logo, render it instead of the wordmark.
+  if (logoUrl) {
+    return (
+      <img
+        src={logoUrl}
+        alt="Store logo"
+        style={{ height: 40 * scale, width: "auto", maxWidth: 180 * scale, objectFit: "contain", display: "block" }}
+      />
+    );
+  }
 
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 8 * scale, lineHeight: 1 }}>
