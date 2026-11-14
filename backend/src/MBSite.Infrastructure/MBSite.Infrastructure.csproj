@@ -5,6 +5,11 @@
     <ProjectReference Include="..\MBSite.Domain\MBSite.Domain.csproj" />
   </ItemGroup>
 
+  <!-- Needed for IHttpContextAccessor (resolve upload URLs from the live request host) -->
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />

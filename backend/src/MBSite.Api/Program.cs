@@ -5,6 +5,7 @@ using MBSite.Application;
 using MBSite.Infrastructure;
 using MBSite.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
@@ -114,6 +115,15 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 // --- Pipeline ---
+// Behind a reverse proxy (e.g. Render), honour X-Forwarded-Proto/-Host so
+// request.Scheme/Host reflect the public https URL — used to build upload URLs.
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost,
+    // Render's proxy isn't in the default safe-network list; trust it.
+    KnownNetworks = { },
+    KnownProxies = { }
+});
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseMiddleware<SecurityHeadersMiddleware>();
 app.UseSerilogRequestLogging();

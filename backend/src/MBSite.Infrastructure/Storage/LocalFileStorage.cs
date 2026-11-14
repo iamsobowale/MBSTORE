@@ -1,5 +1,6 @@
 using MBSite.Application.Common;
 using MBSite.Application.Common.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 
 namespace MBSite.Infrastructure.Storage;
@@ -12,18 +13,23 @@ public class LocalFileStorage : IFileStorage
 {
     private static readonly HashSet<string> AllowedContentTypes = new(StringComparer.OrdinalIgnoreCase)
     {
-        "image/jpeg", "image/png", "image/webp", "image/avif"
+        "image/jpeg", "image/png", "image/webp", "image/avif", "image/svg+xml"
     };
 
     private const long MaxBytes = 5 * 1024 * 1024; // 5 MB
 
     private readonly string _localPath;
-    private readonly string _publicBaseUrl;
+    private readonly string? _configuredBaseUrl;
+    private readonly IHttpContextAccessor _http;
 
-    public LocalFileStorage(IConfiguration config)
+    public LocalFileStorage(IConfiguration config, IHttpContextAccessor http)
     {
         _localPath = config["Storage:LocalPath"] ?? Path.Combine("wwwroot", "uploads");
-        _publicBaseUrl = (config["Storage:PublicBaseUrl"] ?? "http://localhost:5159").TrimEnd('/');
+        // Only treat the config value as authoritative if it was explicitly set
+        // (the default localhost placeholder is ignored in favour of the request host).
+        var configured = config["Storage:PublicBaseUrl"];
+        _configuredBaseUrl = string.IsNullOrWhiteSpace(configured) ? null : configured.TrimEnd('/');
+        _http = http;
     }
 
     public async Task<string> SaveAsync(Stream content, string originalFileName, string contentType, CancellationToken ct = default)
@@ -38,7 +44,14 @@ public class LocalFileStorage : IFileStorage
 
         var ext = Path.GetExtension(originalFileName);
         if (string.IsNullOrWhiteSpace(ext))
-            ext = contentType.Equals("image/png", StringComparison.OrdinalIgnoreCase) ? ".png" : ".jpg";
+            ext = contentType.ToLowerInvariant() switch
+            {
+                "image/png" => ".png",
+                "image/webp" => ".webp",
+                "image/avif" => ".avif",
+                "image/svg+xml" => ".svg",
+                _ => ".jpg",
+            };
 
         var fileName = $"{Guid.NewGuid():N}{ext.ToLowerInvariant()}";
         var fullPath = Path.Combine(_localPath, fileName);
@@ -48,6 +61,20 @@ public class LocalFileStorage : IFileStorage
             await content.CopyToAsync(file, ct);
         }
 
-        return $"{_publicBaseUrl}/uploads/{fileName}";
+        return $"{ResolveBaseUrl()}/uploads/{fileName}";
+    }
+
+    /// <summary>
+    /// Builds the absolute base URL for served uploads. Prefers the live request
+    /// host (works across any deployment without config), falling back to the
+    /// configured value for non-HTTP contexts (e.g. background jobs).
+    /// </summary>
+    private string ResolveBaseUrl()
+    {
+        var request = _http.HttpContext?.Request;
+        if (request is not null)
+            return $"{request.Scheme}://{request.Host}".TrimEnd('/');
+
+        return _configuredBaseUrl ?? "http://localhost:5159";
     }
 }
