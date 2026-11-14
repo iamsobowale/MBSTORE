@@ -48,7 +48,6 @@ export function CheckoutPage() {
         deliveryInstructions: form.deliveryInstructions || null,
         discountCode: discount && !discount.error ? code.trim() : null,
       });
-      clearLocal();
       // Start payment and hand off to the gateway (Fake provider → local mock page).
       const payment = await initiatePayment(order.trackingToken);
       window.location.href = payment.authorizationUrl;

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { verifyPayment } from "../../features/checkout/paymentApi";
+import { useCart } from "../../features/cart/CartContext";
 
 type State = "verifying" | "success" | "failed";
 
@@ -12,6 +13,7 @@ type State = "verifying" | "success" | "failed";
 export function PaymentCallbackPage() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
+  const { clearLocal } = useCart();
   const reference = params.get("reference");
   const failedFlag = params.get("status") === "failed";
   const [state, setState] = useState<State>("verifying");
@@ -28,6 +30,7 @@ export function PaymentCallbackPage() {
     verifyPayment(reference)
       .then((res) => {
         if (res.success) {
+          clearLocal();
           navigate(`/order/${res.trackingToken}`, { replace: true });
         } else {
           setState("failed");
