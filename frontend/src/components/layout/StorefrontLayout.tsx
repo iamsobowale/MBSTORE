@@ -41,7 +41,7 @@ export function StorefrontLayout() {
           }}
         >
           <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
-            <MbLogo size="md" logoUrl={logoUrl} />
+            <MbLogo size="lg" logoUrl={logoUrl} />
           </Link>
           <nav
             className="mb-nav-compact"
