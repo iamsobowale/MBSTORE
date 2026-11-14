@@ -28,7 +28,10 @@ public static class DependencyInjection
         services.AddSingleton<IPasswordHasher, BcryptPasswordHasher>();
         services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddHttpContextAccessor();
-        services.AddScoped<IFileStorage, LocalFileStorage>();
+        if (!string.IsNullOrWhiteSpace(configuration["R2:AccountId"]))
+            services.AddScoped<IFileStorage, R2FileStorage>();
+        else
+            services.AddScoped<IFileStorage, LocalFileStorage>();
 
         // Email channel first (dev logs the message; swap for SMTP/provider in prod).
         services.AddSingleton<IEmailSender, LoggingEmailSender>();
