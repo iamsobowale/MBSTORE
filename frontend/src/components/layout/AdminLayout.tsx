@@ -3,6 +3,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { useAuth } from "../../features/auth/AuthContext";
 import { MbLogo } from "../MbLogo";
 import { fetchStoreSettings, getCachedStoreSettings } from "../../features/storeConfig/api";
+import { getDashboardMetrics } from "../../features/admin/dashboardApi";
 
 // Minimal line icons (inherit currentColor)
 const icon = (path: ReactNode) => (
@@ -38,9 +39,17 @@ export function AdminLayout() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [logoUrl, setLogoUrl] = useState<string | null | undefined>(() => getCachedStoreSettings()?.logoUrl);
+  const [awaitingOrders, setAwaitingOrders] = useState(0);
 
   useEffect(() => {
     fetchStoreSettings().then((s) => setLogoUrl(s.logoUrl)).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    const refresh = () => getDashboardMetrics().then((m) => setAwaitingOrders(m.awaitingProcessing)).catch(() => {});
+    refresh();
+    const id = setInterval(refresh, 60_000);
+    return () => clearInterval(id);
   }, []);
 
   const isActive = (to: string, exact?: boolean) =>
@@ -74,6 +83,25 @@ export function AdminLayout() {
             <Link key={item.to} to={item.to} className="mb-admin-nav" data-active={isActive(item.to, item.exact)}>
               {ICONS[item.icon]}
               {item.label}
+              {item.icon === "orders" && awaitingOrders > 0 && (
+                <span style={{
+                  marginLeft: "auto",
+                  background: "var(--color-danger, #e53e3e)",
+                  color: "#fff",
+                  borderRadius: 999,
+                  fontSize: 11,
+                  fontWeight: 700,
+                  minWidth: 20,
+                  height: 20,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "0 6px",
+                  lineHeight: 1,
+                }}>
+                  {awaitingOrders > 99 ? "99+" : awaitingOrders}
+                </span>
+              )}
             </Link>
           ))}
         </nav>
