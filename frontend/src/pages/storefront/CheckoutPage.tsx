@@ -8,7 +8,7 @@ const FLAT_SHIPPING = 2500;
 const FREE_SHIPPING_THRESHOLD = 100000;
 
 export function CheckoutPage() {
-  const { cart, clearLocal } = useCart();
+  const { cart } = useCart();
 
   const [form, setForm] = useState({
     firstName: "", lastName: "", email: "", phone: "",
