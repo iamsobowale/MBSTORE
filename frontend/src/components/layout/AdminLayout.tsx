@@ -46,10 +46,14 @@ export function AdminLayout() {
   }, []);
 
   useEffect(() => {
-    listAdminOrders({ pageSize: 100 })
-      .then((r) => setAwaitingOrders(r.items.filter((o) => o.isNew).length))
-      .catch(() => {});
-  }, [pathname]);  // re-check on every page change (e.g. after viewing an order)
+    let cancelled = false;
+    const run = (attempt = 0) =>
+      listAdminOrders({ pageSize: 100 })
+        .then((r) => { if (!cancelled) setAwaitingOrders(r.items.filter((o) => o.isNew).length); })
+        .catch(() => { if (!cancelled && attempt < 3) setTimeout(() => run(attempt + 1), 2000); });
+    run();
+    return () => { cancelled = true; };
+  }, [pathname]);
 
   const isActive = (to: string, exact?: boolean) =>
     exact ? pathname === to : pathname === to || pathname.startsWith(to + "/");
