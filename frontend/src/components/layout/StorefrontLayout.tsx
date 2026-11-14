@@ -1,7 +1,7 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useCart } from "../../features/cart/CartContext";
-import { fetchStoreSettings } from "../../features/storeConfig/api";
+import { fetchStoreSettings, getCachedStoreSettings } from "../../features/storeConfig/api";
 import { MbLogo } from "../MbLogo";
 import { AnnouncementBar } from "../AnnouncementBar";
 
@@ -14,7 +14,7 @@ const NAV = [
 export function StorefrontLayout() {
   const { itemCount } = useCart();
   const { pathname } = useLocation();
-  const { data: settings } = useQuery({ queryKey: ["store-settings"], queryFn: fetchStoreSettings });
+  const { data: settings } = useQuery({ queryKey: ["store-settings"], queryFn: fetchStoreSettings, placeholderData: getCachedStoreSettings });
   const logoUrl = settings?.logoUrl;
 
   return (

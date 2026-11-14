@@ -2,7 +2,7 @@ import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState, type ReactNode } from "react";
 import { useAuth } from "../../features/auth/AuthContext";
 import { MbLogo } from "../MbLogo";
-import { fetchStoreSettings } from "../../features/storeConfig/api";
+import { fetchStoreSettings, getCachedStoreSettings } from "../../features/storeConfig/api";
 
 // Minimal line icons (inherit currentColor)
 const icon = (path: ReactNode) => (
@@ -37,7 +37,7 @@ export function AdminLayout() {
   const { email, logout } = useAuth();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [logoUrl, setLogoUrl] = useState<string | null | undefined>(() => getCachedStoreSettings()?.logoUrl);
 
   useEffect(() => {
     fetchStoreSettings().then((s) => setLogoUrl(s.logoUrl)).catch(() => {});

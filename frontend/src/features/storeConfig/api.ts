@@ -12,9 +12,19 @@ export interface StoreSettings {
   accentColor: string;
 }
 
+const CACHE_KEY = "mb_store_settings";
+
 export async function fetchStoreSettings(): Promise<StoreSettings> {
   const { data } = await api.get<StoreSettings>("/store-config");
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); } catch {}
   return data;
+}
+
+export function getCachedStoreSettings(): StoreSettings | undefined {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    return raw ? JSON.parse(raw) : undefined;
+  } catch { return undefined; }
 }
 
 export async function updateStoreSettings(
