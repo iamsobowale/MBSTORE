@@ -20,11 +20,14 @@ RUN dotnet publish src/MBSite.Api/MBSite.Api.csproj \
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 
-# Non-root user
+# Non-root user — create uploads dir and hand it to the app user before switching
 RUN groupadd --system mbsite && useradd --system --gid mbsite mbsite
-USER mbsite
 
 COPY --from=build /app/publish .
+
+RUN mkdir -p /app/wwwroot/uploads && chown -R mbsite:mbsite /app/wwwroot
+
+USER mbsite
 
 # Storage mount-point (uploads directory)
 VOLUME ["/app/wwwroot/uploads"]
