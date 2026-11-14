@@ -37,9 +37,11 @@ public sealed class R2FileStorage : IFileStorage, IAsyncDisposable
         var creds    = new BasicAWSCredentials(accessKey, secretKey);
         var s3Config = new AmazonS3Config
         {
-            ServiceURL           = endpoint,
-            ForcePathStyle       = true,
-            AuthenticationRegion = "auto",
+            ServiceURL                       = endpoint,
+            ForcePathStyle                   = true,
+            AuthenticationRegion             = "auto",
+            // R2 does not support chunked/trailer signatures — use unsigned payload instead.
+            DisableDefaultChecksumValidation = true,
         };
         _client = new AmazonS3Client(creds, s3Config);
     }
@@ -67,11 +69,12 @@ public sealed class R2FileStorage : IFileStorage, IAsyncDisposable
 
         var request = new PutObjectRequest
         {
-            BucketName  = _bucket,
-            Key         = key,
-            InputStream = content,
-            ContentType = contentType,
-            CannedACL   = S3CannedACL.PublicRead,
+            BucketName            = _bucket,
+            Key                   = key,
+            InputStream           = content,
+            ContentType           = contentType,
+            CannedACL             = S3CannedACL.PublicRead,
+            DisablePayloadSigning = true,
         };
 
         await _client.PutObjectAsync(request, ct);
