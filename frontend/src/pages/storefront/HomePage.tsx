@@ -52,7 +52,7 @@ export function HomePage() {
           }}
         />
         <div className="container mb-rise" style={{ position: "relative", padding: "var(--space-16) 0" }}>
-          <p className="eyebrow" style={{ color: "var(--color-accent)", opacity: 0.85 }}>
+          <p className="eyebrow" style={{ color: "var(--color-accent)", opacity: 0.85, fontSize: "var(--text-sm)" }}>
             {brand} — Premium Activewear
           </p>
           <h1 style={{ fontSize: "var(--text-3xl)", margin: "var(--space-6) 0", maxWidth: 900, textTransform: "uppercase" }}>
