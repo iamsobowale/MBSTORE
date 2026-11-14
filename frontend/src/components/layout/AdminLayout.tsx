@@ -1,7 +1,8 @@
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useAuth } from "../../features/auth/AuthContext";
 import { MbLogo } from "../MbLogo";
+import { fetchStoreSettings } from "../../features/storeConfig/api";
 
 // Minimal line icons (inherit currentColor)
 const icon = (path: ReactNode) => (
@@ -36,6 +37,11 @@ export function AdminLayout() {
   const { email, logout } = useAuth();
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchStoreSettings().then((s) => setLogoUrl(s.logoUrl)).catch(() => {});
+  }, []);
 
   const isActive = (to: string, exact?: boolean) =>
     exact ? pathname === to : pathname === to || pathname.startsWith(to + "/");
@@ -57,7 +63,7 @@ export function AdminLayout() {
         }}
       >
         <div style={{ marginBottom: "var(--space-8)" }}>
-          <MbLogo size="sm" />
+          <MbLogo size="sm" logoUrl={logoUrl} />
           <div style={{ fontSize: "var(--text-xs)", color: "var(--color-muted)", marginTop: 4, letterSpacing: "0.14em", textTransform: "uppercase" }}>
             Admin Console
           </div>
