@@ -13,6 +13,7 @@ public interface IAdminOrderService
     Task<AdminOrderDetail> GetAsync(Guid id, CancellationToken ct = default);
     Task<AdminOrderDetail> UpdateStatusAsync(
         Guid id, OrderStatus to, string? note, Guid? byUserId, CancellationToken ct = default);
+    Task MarkViewedAsync(Guid id, CancellationToken ct = default);
 }
 
 /// <summary>
@@ -67,7 +68,8 @@ public class AdminOrderService : IAdminOrderService
                 o.GrandTotal,
                 o.Currency,
                 o.Items.Count,
-                o.CreatedAt))
+                o.CreatedAt,
+                o.AdminViewedAt == null))
             .ToListAsync(ct);
 
         return new PagedResult<AdminOrderListItem>(items, page, pageSize, total);
@@ -115,6 +117,17 @@ public class AdminOrderService : IAdminOrderService
         await _events.PublishStatusChangedAsync(new OrderStatusChanged(order.Id, from, to, byUserId), ct);
 
         return await GetAsync(id, ct);
+    }
+
+    public async Task MarkViewedAsync(Guid id, CancellationToken ct = default)
+    {
+        var order = await _db.Orders.FirstOrDefaultAsync(o => o.Id == id, ct)
+            ?? throw new NotFoundException("Order not found.");
+        if (order.AdminViewedAt is null)
+        {
+            order.AdminViewedAt = DateTime.UtcNow;
+            await _db.SaveChangesAsync(ct);
+        }
     }
 
     private static AdminOrderDetail Map(Order o) => new(

@@ -58,8 +58,11 @@ export function OrdersPage() {
             </thead>
             <tbody>
               {data?.items.map((o) => (
-                <tr key={o.id}>
-                  <td><Link to={`/admin/orders/${o.id}`} style={{ fontWeight: 600 }}>{o.publicReference}</Link></td>
+                <tr key={o.id} style={o.isNew ? { background: "color-mix(in srgb, var(--color-primary) 4%, transparent)" } : undefined}>
+                  <td>
+                    <Link to={`/admin/orders/${o.id}`} style={{ fontWeight: 600 }}>{o.publicReference}</Link>
+                    {o.isNew && <span style={{ marginLeft: 8, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", background: "var(--color-primary)", color: "var(--color-bg)", borderRadius: 4, padding: "2px 6px", verticalAlign: "middle" }}>NEW</span>}
+                  </td>
                   <td style={{ color: "var(--color-muted)" }}>{new Date(o.createdAt).toLocaleDateString()}</td>
                   <td>
                     <div>{o.customerName || "—"}</div>

@@ -28,6 +28,7 @@ export interface AdminOrderListItem {
   currency: string;
   itemCount: number;
   createdAt: string;
+  isNew: boolean;
 }
 
 export interface AdminOrderItem {
@@ -89,6 +90,10 @@ export async function listAdminOrders(params: ListOrdersParams): Promise<PagedRe
 export async function getAdminOrder(id: string): Promise<AdminOrderDetail> {
   const { data } = await api.get<AdminOrderDetail>(`/admin/orders/${id}`);
   return data;
+}
+
+export async function markOrderViewed(id: string): Promise<void> {
+  await api.post(`/admin/orders/${id}/viewed`);
 }
 
 export async function updateOrderStatus(

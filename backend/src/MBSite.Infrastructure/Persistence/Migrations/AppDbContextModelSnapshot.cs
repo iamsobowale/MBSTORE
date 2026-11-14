@@ -417,6 +417,9 @@ namespace MBSite.Infrastructure.Persistence.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
+                    b.Property<DateTime?>("AdminViewedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("City")
                         .IsRequired()
                         .HasMaxLength(120)

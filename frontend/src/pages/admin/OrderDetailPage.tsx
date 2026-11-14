@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { getAdminOrder, ORDER_STATUS_LABEL, updateOrderStatus } from "../../features/admin/ordersApi";
+import { getAdminOrder, markOrderViewed, ORDER_STATUS_LABEL, updateOrderStatus } from "../../features/admin/ordersApi";
 import { formatMoney } from "../../lib/format";
 import { OrderStatusBadge } from "../../components/OrderStatusBadge";
 import { OrderTimeline } from "../../components/OrderTimeline";
@@ -17,6 +17,10 @@ export function OrderDetailPage() {
     queryFn: () => getAdminOrder(id!),
     enabled: !!id,
   });
+
+  useEffect(() => {
+    if (id) markOrderViewed(id).then(() => qc.invalidateQueries({ queryKey: ["admin-orders"] })).catch(() => {});
+  }, [id, qc]);
 
   const transition = useMutation({
     mutationFn: (status: string) => updateOrderStatus(id!, status, note || undefined),

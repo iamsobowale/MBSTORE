@@ -37,6 +37,7 @@ public class Order : BaseEntity
 
     public DateTime? ExpiresAt { get; set; }   // pending-payment expiry
     public DateTime? PlacedAt { get; set; }
+    public DateTime? AdminViewedAt { get; set; }
 
     public List<OrderItem> Items { get; set; } = new();
     public List<OrderStatusHistory> StatusHistory { get; set; } = new();

@@ -3,7 +3,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { useAuth } from "../../features/auth/AuthContext";
 import { MbLogo } from "../MbLogo";
 import { fetchStoreSettings, getCachedStoreSettings } from "../../features/storeConfig/api";
-import { getDashboardMetrics } from "../../features/admin/dashboardApi";
+import { listAdminOrders } from "../../features/admin/ordersApi";
 
 // Minimal line icons (inherit currentColor)
 const icon = (path: ReactNode) => (
@@ -46,10 +46,13 @@ export function AdminLayout() {
   }, []);
 
   useEffect(() => {
-    const refresh = () => getDashboardMetrics().then((m) => setAwaitingOrders(m.awaitingProcessing)).catch(() => {});
+    const refresh = () =>
+      listAdminOrders({ pageSize: 100 })
+        .then((r) => setAwaitingOrders(r.items.filter((o) => o.isNew).length))
+        .catch(() => {});
     refresh();
-    const id = setInterval(refresh, 60_000);
-    return () => clearInterval(id);
+    const timer = setInterval(refresh, 60_000);
+    return () => clearInterval(timer);
   }, []);
 
   const isActive = (to: string, exact?: boolean) =>

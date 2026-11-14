@@ -10,7 +10,8 @@ public record AdminOrderListItem(
     decimal GrandTotal,
     string Currency,
     int ItemCount,
-    DateTime CreatedAt);
+    DateTime CreatedAt,
+    bool IsNew);
 
 public record AdminOrderItemDto(
     string ProductName, string? Color, string? Size, string? Sku,

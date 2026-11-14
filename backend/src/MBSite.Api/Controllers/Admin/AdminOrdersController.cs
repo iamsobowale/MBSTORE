@@ -29,6 +29,13 @@ public class AdminOrdersController : ControllerBase
     public async Task<ActionResult<AdminOrderDetail>> Get(Guid id, CancellationToken ct)
         => Ok(await _svc.GetAsync(id, ct));
 
+    [HttpPost("{id:guid}/viewed")]
+    public async Task<IActionResult> MarkViewed(Guid id, CancellationToken ct)
+    {
+        await _svc.MarkViewedAsync(id, ct);
+        return NoContent();
+    }
+
     [HttpPost("{id:guid}/status")]
     public async Task<ActionResult<AdminOrderDetail>> UpdateStatus(
         Guid id, UpdateOrderStatusRequest request, CancellationToken ct)
