@@ -37,11 +37,9 @@ public sealed class R2FileStorage : IFileStorage, IAsyncDisposable
         var creds    = new BasicAWSCredentials(accessKey, secretKey);
         var s3Config = new AmazonS3Config
         {
-            ServiceURL                       = endpoint,
-            ForcePathStyle                   = true,
-            AuthenticationRegion             = "auto",
-            // R2 does not support chunked/trailer signatures — use unsigned payload instead.
-            DisableDefaultChecksumValidation = true,
+            ServiceURL           = endpoint,
+            ForcePathStyle       = true,
+            AuthenticationRegion = "auto",
         };
         _client = new AmazonS3Client(creds, s3Config);
     }
