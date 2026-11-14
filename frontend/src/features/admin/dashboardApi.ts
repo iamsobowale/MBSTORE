@@ -19,6 +19,7 @@ export interface DashboardMetrics {
   totalRevenue: number;
   totalOrders: number;
   awaitingProcessing: number;
+  unviewedOrders: number;
   lowStockVariants: number;
   recentOrders: RecentOrderRow[];
   salesTimeSeries: SalesDataPoint[];

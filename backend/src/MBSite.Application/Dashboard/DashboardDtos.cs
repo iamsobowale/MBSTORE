@@ -4,6 +4,7 @@ public record DashboardMetrics(
     decimal TotalRevenue,
     int TotalOrders,
     int AwaitingProcessing,
+    int UnviewedOrders,
     int LowStockVariants,
     IReadOnlyList<RecentOrderRow> RecentOrders,
     IReadOnlyList<SalesDataPoint> SalesTimeSeries);

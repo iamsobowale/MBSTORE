@@ -37,6 +37,9 @@ public class DashboardService : IDashboardService
         var awaitingProcessing = await _db.Orders.AsNoTracking()
             .CountAsync(o => o.Status == OrderStatus.Paid, ct);
 
+        var unviewedOrders = await _db.Orders.AsNoTracking()
+            .CountAsync(o => o.AdminViewedAt == null && o.Status != OrderStatus.PendingPayment, ct);
+
         var lowStockVariants = await _db.ProductVariants.AsNoTracking()
             .CountAsync(v => v.IsActive && v.StockQuantity <= LowStockThreshold, ct);
 
@@ -71,6 +74,6 @@ public class DashboardService : IDashboardService
             })
             .ToList();
 
-        return new DashboardMetrics(totalRevenue, totalOrders, awaitingProcessing, lowStockVariants, recentOrders, timeSeries);
+        return new DashboardMetrics(totalRevenue, totalOrders, awaitingProcessing, unviewedOrders, lowStockVariants, recentOrders, timeSeries);
     }
 }
