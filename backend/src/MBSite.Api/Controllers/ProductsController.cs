@@ -16,6 +16,7 @@ public class ProductsController : ControllerBase
 
     /// <summary>Public product listing with filtering, sorting, and pagination.</summary>
     [HttpGet]
+    [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Any, VaryByQueryKeys = new[] { "*" })]
     public async Task<ActionResult<PagedResult<ProductListItemDto>>> List(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 12,

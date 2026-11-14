@@ -15,6 +15,7 @@ public class StoreConfigController : ControllerBase
     /// <summary>Public: store branding + theme for the storefront theming system.</summary>
     [HttpGet]
     [AllowAnonymous]
+    [ResponseCache(Duration = 300, Location = ResponseCacheLocation.Any, VaryByHeader = "Accept")]
     public async Task<ActionResult<StoreSettingsDto>> Get(CancellationToken ct)
         => Ok(await _service.GetAsync(ct));
 

@@ -14,6 +14,7 @@ public class CategoriesController : ControllerBase
     public CategoriesController(ICatalogService catalog) => _catalog = catalog;
 
     [HttpGet]
+    [ResponseCache(Duration = 120, Location = ResponseCacheLocation.Any, VaryByHeader = "Accept")]
     public async Task<ActionResult<IReadOnlyList<CategoryDto>>> List(CancellationToken ct)
         => Ok(await _catalog.GetCategoriesAsync(ct));
 }

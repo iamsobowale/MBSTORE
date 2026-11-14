@@ -103,6 +103,8 @@ builder.Services.AddRateLimiter(opts =>
     });
 });
 
+builder.Services.AddResponseCaching();
+
 // --- CORS for the React storefront/admin ---
 const string CorsPolicy = "StorefrontCors";
 builder.Services.AddCors(options =>
@@ -148,6 +150,7 @@ app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "wwwroot"))
 });
+app.UseResponseCaching();
 app.UseCors(CorsPolicy);
 app.UseAuthentication();
 app.UseAuthorization();
